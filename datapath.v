@@ -5,7 +5,7 @@ module datapath (
     input a_load,
     input [2:0] alu_op,
 
-    input [3:0] operand,     // inmediato o dirección baja
+    input [3:0] operand,     // inmediato o dirección
     input [3:0] ram_data,    // dato leído de RAM
     input [3:0] in_data,     // dato de entrada externa
     input [1:0] src_sel,     // selecciona la fuente para B
@@ -19,6 +19,7 @@ module datapath (
     wire [3:0] a_q;
     wire [3:0] mux_b_out;
     wire [3:0] alu_out;
+    wire alu_zero_unused;
 
     // Selección de fuente para la entrada B de la ALU
     // src_sel:
@@ -47,11 +48,14 @@ module datapath (
         .b(mux_b_out),
         .op(alu_op),
         .y(alu_out),
-        .zero(zero),
-        .carry(carry)
+        .carry(carry),
+        .zero(alu_zero_unused)
     );
 
     assign acc   = a_q;
     assign alu_y = alu_out;
+
+    // Flag zero basada en el acumulador
+    assign zero = (a_q == 4'b0000);
 
 endmodule

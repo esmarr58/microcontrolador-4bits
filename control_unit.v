@@ -12,7 +12,8 @@ module control_unit (
     output reg mem_we,
     output reg halt,
     output reg [2:0] alu_op,
-    output reg [1:0] src_sel
+    output reg [1:0] src_sel,
+    output reg [1:0] state_dbg
 );
 
     // Estados
@@ -50,10 +51,10 @@ module control_unit (
     localparam ALU_PASS = 3'b110;
 
     // src_sel
-    localparam SRC_IMM = 2'b00;   // operand
-    localparam SRC_RAM = 2'b01;   // dato de RAM
-    localparam SRC_IN  = 2'b10;   // entrada externa
-    localparam SRC_0   = 2'b11;   // cero
+    localparam SRC_IMM = 2'b00;
+    localparam SRC_RAM = 2'b01;
+    localparam SRC_IN  = 2'b10;
+    localparam SRC_0   = 2'b11;
 
     // Registro de estado
     always @(posedge clk or posedge rst) begin
@@ -75,9 +76,13 @@ module control_unit (
         end
     end
 
+    // Debug del estado
+    always @(*) begin
+        state_dbg = state;
+    end
+
     // Lógica de control
     always @(*) begin
-        // valores por defecto
         ir_load  = 1'b0;
         pc_inc   = 1'b0;
         pc_load  = 1'b0;
